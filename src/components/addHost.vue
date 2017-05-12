@@ -1,13 +1,13 @@
 <template>
-  <div style="margin:20px 120px 0 0">
-    <el-form :model="hostInfo" :rules="rules" label-width="180px" class="demo-ruleForm" ref="hostInfo">
+  <div style="margin:20px 320px 0 0">
+    <el-form :model="hostInfo" :rules="rules" label-width="380px" class="demo-ruleForm" ref="hostInfo">
 
       <el-form-item label="信息录入人" prop="username">
         <el-input v-model="hostInfo.username" placeholder="请输入信息录入人名字"></el-input>
       </el-form-item>
 
-      <el-form-item label="地址" prop="address">
-        <el-select v-model="hostInfo.address" placeholder="请选择地址" style="width:100%">
+      <el-form-item label="机房位置" prop="address">
+        <el-select v-model="hostInfo.address" placeholder="请选择机房位置" style="width:100%">
           <el-option label="华山" value="华山"></el-option>
           <el-option label="东区" value="东区"></el-option>
           <el-option label="教三" value="教三"></el-option>
@@ -118,8 +118,16 @@
 
       <el-form-item label="操作系统" prop="operating_system">
         <el-select v-model="hostInfo.operating_system" placeholder="请选择操作系统" style="width:100%">
-          <el-option label="win7" value="win7"></el-option>
-          <el-option label="win8" value="win8"></el-option>
+          <el-option label="centos6" value="centos6"></el-option>
+          <el-option label="centos7" value="centos7"></el-option>
+          <el-option label="Ubuntu12.04" value="Ubuntu12.04"></el-option>
+          <el-option label="Ubuntu14.04" value="Ubuntu14.04"></el-option>
+          <el-option label="Ubuntu16.04" value="Ubuntu16.04"></el-option>
+          <el-option label="Windows2003" value="Windows2003"></el-option>
+          <el-option label="Windows2008R2T" value="Windows2008R2T"></el-option>
+          <el-option label="Windows2012" value="Windows2012"></el-option>
+          <el-option label="RedHat6" value="RedHat6"></el-option>
+          <el-option label="RedHat7" value="RedHat7"></el-option>
         </el-select>
       </el-form-item>
 
@@ -209,8 +217,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="success" @click="submithostInfo">立即添加</el-button>
         <el-button type="danger" @click="resetForm('hostInfo')">重置表单</el-button>
+        <el-button type="success" class="toRight" @click="submithostInfo">立即添加</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -337,5 +345,7 @@
 
 
 <style scoped>
-  
+  .toRight {
+    float: right
+  }
 </style>
