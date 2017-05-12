@@ -5,29 +5,34 @@
       border
       style="width: 100%">
       <el-table-column
-        label="类型"
+        label="id"
         sortable
         width="180">
         <template scope="scope">
-          <el-tag>{{
-            scope.row.type===0
-            ?'机关部门'
-            :(scope.row.type===1
-            ?'教学单位'
-            :(scope.row.type===2
-            ?'教辅/科研单位'
-            :'群团/附属单位'
-            )
-            )
-            }}
-          </el-tag>
+          <span style="margin-left: 10px">{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column
-        label="部门名字"
+        label="用户名"
       >
         <template scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.department }}</span>
+          <span style="margin-left: 10px">{{ scope.row.username }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        label="用户密码"
+      >
+        <template scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.password }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        label="状态"
+      >
+        <template scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.status==1?'启用':'未启用' }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -60,15 +65,16 @@
     <!-- Form -->
     <el-dialog title="修改信息" v-model="modifyFormVisible">
       <el-form :model="modifyForm">
-        <el-form-item label="部门名字" :label-width="modifyLabelWidth">
-          <el-input v-model="modifyForm.department" auto-complete="off"></el-input>
+        <el-form-item label="用户名" :label-width="modifyLabelWidth">
+          <el-input v-model="modifyForm.username" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="类型" :label-width="modifyLabelWidth">
-          <el-select v-model="modifyForm.type" placeholder="请选择活动区域">
-            <el-option label="机关部门" value="0"></el-option>
-            <el-option label="教学单位" value="1"></el-option>
-            <el-option label="教辅/科研单位" value="2"></el-option>
-            <el-option label="群团/附属单位" value="3"></el-option>
+        <el-form-item label="密码" :label-width="modifyLabelWidth">
+          <el-input v-model="modifyForm.password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="状态" :label-width="modifyLabelWidth">
+          <el-select v-model="modifyForm.status" placeholder="请选择状态">
+            <el-option label="未启用" value=0></el-option>
+            <el-option label="启用" value=1></el-option>
           </el-select>
         </el-form-item>
 
@@ -82,32 +88,36 @@
 </template>
 
 <script>
+  /* eslint-disable eqeqeq */
+
   export default {
     data () {
       return {
         tableData: [
           {
-            'id': 1,
-            'type': 0,
-            'department': '重在参与',
+            'id': '1',
+            'username': '0',
+            'password': '重在参与',
+            'status': '1',
             'updateTime': 'xxxx-xx-xx'
           },
           {
-            'id': 1,
-            'type': 1,
-            'department': '党委办公室',
+            'id': '2',
+            'username': '1',
+            'password': '党委办公室',
+            'status': '0',
             'updateTime': 'xxxx-xx-xx'
           },
           {
-            'id': 2,
-            'type': 2,
-            'department': '党委统战部',
+            'id': '2',
+            'username': '2',
+            'password': '党委统战部',
             'updateTime': 'xxxx-xx-xx'
           },
           {
-            'id': 3,
-            'type': 3,
-            'department': '校长办公室',
+            'id': '3',
+            'username': '3',
+            'password': '校长办公室',
             'updateTime': 'xxxx-xx-xx'
           }
         ],
@@ -115,8 +125,9 @@
         modifyForm: {
           index: '',
           id: '',
-          department: '',
-          type: ''
+          username: '',
+          password: '',
+          status: ''
         },
         modifyLabelWidth: '120px'
       }
@@ -126,20 +137,22 @@
         this.modifyFormVisible = true
         this.modifyForm.index = index
         this.modifyForm.id = row.id
-        this.modifyForm.department = row.department
-        this.modifyForm.type = row.type
+        this.modifyForm.username = row.username
+        this.modifyForm.password = row.password
+        this.modifyForm.status = row.status
       },
       handleDelete (index, row) {
         this.modifyForm.index = index
         this.modifyForm.id = row.id
-        this.modifyForm.department = row.department
-        this.modifyForm.type = row.type
+        this.modifyForm.username = row.username
+        this.modifyForm.password = row.password
+        this.modifyForm.status = row.status
         this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then((res) => {
-          if (res === 'confirm') {
+          if (res == 'confirm') {
             this.$ajax.post('', this.modifyForm)
               .then((res) => {
                 this.tableData.splice(this.modifyForm.index, 1)
@@ -168,8 +181,9 @@
           .then((res) => {
             // 这一块 还差一个时间没更新
             this.tableData[this.modifyForm.index].id = this.modifyForm.id
-            this.tableData[this.modifyForm.index].department = this.modifyForm.department
-            this.tableData[this.modifyForm.index].type = this.modifyForm.type
+            this.tableData[this.modifyForm.index].username = this.modifyForm.username
+            this.tableData[this.modifyForm.index].password = this.modifyForm.password
+            this.tableData[this.modifyForm.index].status = this.modifyForm.status
             this.$message({
               type: 'success',
               message: '编辑成功!'
