@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="printer-container">
+      <span id="teletype" v-html="type">{{type}}<span>|</span></span>
+    </div>
     <div class="login">
       <h1>登录</h1>
       <input type="text" v-model="username" class="username" placeholder="用户名">
@@ -14,7 +17,8 @@
     data () {
       return {
         username: '',
-        password: ''
+        password: '',
+        type: ''
       }
     },
     methods: {
@@ -33,12 +37,39 @@
             })
           })
       }
+    },
+    mounted () {
+      var word = '我就是那个漂亮的背景图<br /> ......'.split('')
+      for (var i = 0; i < word.length; i++) {
+        ((i) => {
+          setTimeout(() => {
+            this.type += (word[i])
+          }, 300 * i)
+        })(i)
+      }
     }
   }
 
 </script>
 
 <style scoped>
+  @keyframes blink {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: black;
+    }
+  }
+
+  #teletype {
+    font-size: 50px;
+  }
+
+  #teletype span {
+    animation: blink 1s step-end infinite;
+  }
+
   body {
     background: #f8f8f8;
     font-family: 'PT Sans', Helvetica, Arial, sans-serif;
