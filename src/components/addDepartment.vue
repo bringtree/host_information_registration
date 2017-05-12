@@ -8,6 +8,12 @@
       <el-form-item label="部门名字">
         <el-input v-model="department.name"></el-input>
       </el-form-item>
+      <el-form-item label="状态" >
+        <el-select v-model="department.status" placeholder="请选择状态">
+          <el-option label="未启用" value=0></el-option>
+          <el-option label="启用" value=1></el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
     <el-button type="primary" style="float:right;width:100px; margin:20px" @click="add">添加</el-button>
   </div>
@@ -19,6 +25,7 @@
       return {
         department: {
           name: '',
+          status: '',
           type: ''
         }
       }
