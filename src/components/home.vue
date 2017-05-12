@@ -10,7 +10,7 @@
         </el-menu-item>
         <el-menu-item index="3">
           <router-link to="/search">搜索</router-link>
-        </el-menu-item>   
+        </el-menu-item>
         <el-menu-item index="4">
           <router-link to="/department">所属部门</router-link>
         </el-menu-item>
@@ -24,9 +24,9 @@
     </div>
 
     <div>
-      <router-view></router-view>      
+      <router-view></router-view>
     </div>
-  </div> 
+  </div>
 </template>
 
 
