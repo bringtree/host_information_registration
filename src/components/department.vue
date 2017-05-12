@@ -113,6 +113,7 @@
         ],
         modifyFormVisible: false,
         modifyForm: {
+          index: '',
           id: '',
           department: '',
           type: ''
@@ -123,11 +124,13 @@
     methods: {
       handleEdit (index, row) {
         this.modifyFormVisible = true
+        this.modifyForm.index = index
         this.modifyForm.id = row.id
         this.modifyForm.department = row.department
         this.modifyForm.type = row.type
       },
       handleDelete (index, row) {
+        this.modifyForm.index = index
         this.modifyForm.id = row.id
         this.modifyForm.department = row.department
         this.modifyForm.type = row.type
@@ -139,6 +142,7 @@
           if (res === 'confirm') {
             this.$ajax.post('', this.modifyForm)
               .then((res) => {
+                this.tableData.splice(this.modifyForm.index, 1)
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -162,6 +166,9 @@
         this.modifyFormVisible = false
         this.$ajax.post('', this.modifyForm)
           .then((res) => {
+            this.tableData[this.modifyForm.index].id = this.modifyForm.id
+            this.tableData[this.modifyForm.index].department = this.modifyForm.department
+            this.tableData[this.modifyForm.index].type = this.modifyForm.type
             this.$message({
               type: 'success',
               message: '编辑成功!'
