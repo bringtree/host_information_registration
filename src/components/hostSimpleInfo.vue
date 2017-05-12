@@ -57,6 +57,7 @@
     methods: {
       handleClick () {
         console.log(1)
+        this.$router.push({ path: '/hostDetailed' })
       },
       handleSizeChange (val) {
         console.log(`每页 ${val} 条`)

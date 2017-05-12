@@ -8,6 +8,7 @@ import search from '@/components/search'
 import department from '@/components/department'
 import networkLabel from '@/components/networkLabel'
 import admin from '@/components/admin'
+import hostDetailed from '@/components/hostDetailed'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/',
       name: 'login',
       component: login
+    },
+    {
+      path: '/hostDetailed',
+      name: 'hostDetailed',
+      component: hostDetailed
     },
     {
       path: '/home',
