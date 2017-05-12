@@ -34,11 +34,22 @@
   export default {
     data () {
       return {
-        activeIndex: '1'
+        activeIndex: ''
       }
     },
     methods: {
       handleSelect (key, keyPath) {
+        // 每次点击导航时都会将当前的激活index保存到sessionStorage
+        sessionStorage.activekey = JSON.stringify(key)
+      }
+    },
+    created: function () {
+      // 使得页面刷新时导航的activeIndex不会每次都被初始化为1
+      let key = JSON.parse(sessionStorage.activekey)
+      if (key !== null) {
+        this.activeIndex = key
+      } else {
+        this.activeIndex = '1'
       }
     }
   }

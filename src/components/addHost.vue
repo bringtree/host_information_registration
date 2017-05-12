@@ -182,7 +182,7 @@
       </el-form-item>
 
       <el-form-item label="开通时间" prop="opening_time">
-        <el-date-picker type="datetime" placeholder="选择开通日期时间" v-model="hostInfo.opening_time" style="width: 100%;"></el-date-picker>
+        <el-date-picker type="datetime" @change="opening_time_change" v-model="hostInfo.opening_time" placeholder="选择开通日期时间" style="width: 100%;"></el-date-picker>
       </el-form-item>
 
       <el-form-item label="主机责任人" prop="vm_responsible">
@@ -201,7 +201,7 @@
       </el-form-item>
 
       <el-form-item label="检测时间" prop="detection_time">
-        <el-date-picker type="datetime" placeholder="请选择检测日期时间" v-model="hostInfo.detection_time" style="width: 100%;"></el-date-picker>
+        <el-date-picker type="datetime" @change="detection_time_change" v-model="hostInfo.detection_time" placeholder="请选择检测日期时间" style="width: 100%;"></el-date-picker>
       </el-form-item>
 
       <el-form-item label="备注" prop="remark">
@@ -209,8 +209,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="success" @click="submithostInfo">立即创建</el-button>
-        <el-button type="danger" @click="resetForm('hostInfo')">重置</el-button>
+        <el-button type="success" @click="submithostInfo">立即添加</el-button>
+        <el-button type="danger" @click="resetForm('hostInfo')">重置表单</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -295,9 +295,41 @@
     },
     methods: {
       submithostInfo: function () {
+        // 提交表单的数据操作
+        console.log(this.hostInfo)
+        // 记得加上判断，必填信息填完才可以提交
+        if (this.hostInfo) {
+          this.suc()
+        } else {
+          this.err()
+        }
       },
-      resetForm (formName) {
+      resetForm: function (formName) {
         this.$refs[formName].resetFields()
+      },
+      // 用element-ui提供的change回调返回格式化的数据
+      // 因为暂时想不到办法判断是哪个时间触发的，所以先写了两个
+      opening_time_change: function (val) {
+        this.hostInfo.opening_time = val
+      },
+      detection_time_change: function (val) {
+        this.hostInfo.detection_time = val
+      },
+      suc: function () {
+        this.$message({
+          showClose: true,
+          // message为返回的信息
+          message: '恭喜你，这是一条成功消息',
+          type: 'success'
+        })
+      },
+      err: function () {
+        this.$message({
+          showClose: true,
+          // message为返回的信息
+          message: '错了哦，这是一条错误消息',
+          type: 'error'
+        })
       }
     }
   }
