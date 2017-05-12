@@ -1,97 +1,122 @@
 <template>
   <div>
-    <el-table
-      :data="tableData"
-      border
-      style="width: 100%">
-      <el-table-column
-        label="类型"
-        sortable
-        width="180">
-        <template scope="scope">
-          <el-tag>{{
-            scope.row.type==0
-            ?'机关部门'
-            :(scope.row.type==1
-            ?'教学单位'
-            :(scope.row.type==2
-            ?'教辅/科研单位'
-            :'群团/附属单位'
-            )
-            )
-            }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="部门名字"
-      >
-        <template scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.department }}</span>
-        </template>
-      </el-table-column>
+    <el-button type="text" @click="addFormVisible = true">点击添加部门</el-button>
+    <div>
+      <el-dialog title="点击添加部门" v-model="addFormVisible">
+        <el-form :model="addForm">
+          <el-form-item label="部门类型" :label-width="modifyLabelWidth">
+            <el-input v-model="addForm.type"></el-input>
+          </el-form-item>
+          <el-form-item label="部门名字" :label-width="modifyLabelWidth">
+            <el-input v-model="addForm.department"></el-input>
+          </el-form-item>
+          <el-form-item label="状态" :label-width="modifyLabelWidth">
+            <el-select v-model="addForm.status" placeholder="请选择状态">
+              <el-option label="未启用" value=0></el-option>
+              <el-option label="启用" value=1></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+    <div>
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%">
+        <el-table-column
+          label="类型"
+          sortable
+          width="180">
+          <template scope="scope">
+            <el-tag>{{
+              scope.row.type==0
+              ?'机关部门'
+              :(scope.row.type==1
+              ?'教学单位'
+              :(scope.row.type==2
+              ?'教辅/科研单位'
+              :'群团/附属单位'
+              )
+              )
+              }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="部门名字"
+        >
+          <template scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.department }}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column
-        label="状态"
-      >
-        <template scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.status==1?'启用':'未启用' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="最后修改日期"
-        sortable
-        width="180">
-        <template scope="scope">
-          <el-icon name="time"></el-icon>
-          <span style="margin-left: 10px">{{ scope.row.updateTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作"
-                       width="200"
-      >
-        <template scope="scope">
-          <el-button
-            size="small"
-            @click="handleEdit(scope.$index, scope.row)">编辑
-          </el-button>
-          <el-button
-            size="small"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          label="状态"
+        >
+          <template scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.status==1?'启用':'未启用' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="最后修改日期"
+          sortable
+          width="180">
+          <template scope="scope">
+            <el-icon name="time"></el-icon>
+            <span style="margin-left: 10px">{{ scope.row.updateTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作"
+                         width="200"
+        >
+          <template scope="scope">
+            <el-button
+              size="small"
+              @click="handleEdit(scope.$index, scope.row)">编辑
+            </el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+            >删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <!-- Form -->
-    <el-dialog title="修改信息" v-model="modifyFormVisible">
-      <el-form :model="modifyForm">
-        <el-form-item label="部门名字" :label-width="modifyLabelWidth">
-          <el-input v-model="modifyForm.department" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="类型" :label-width="modifyLabelWidth">
-          <el-select v-model="modifyForm.type" placeholder="请选择类型">
-            <el-option label="机关部门" value=0></el-option>
-            <el-option label="教学单位" value=1></el-option>
-            <el-option label="教辅/科研单位" value=2></el-option>
-            <el-option label="群团/附属单位" value=3></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态" :label-width="modifyLabelWidth">
-          <el-select v-model="modifyForm.status" placeholder="请选择状态">
-            <el-option label="未启用" value=0></el-option>
-            <el-option label="启用" value=1></el-option>
-          </el-select>
-        </el-form-item>
+      <!-- Form -->
+      <el-dialog title="修改信息" v-model="modifyFormVisible">
+        <el-form :model="modifyForm">
+          <el-form-item label="部门名字" :label-width="modifyLabelWidth">
+            <el-input v-model="modifyForm.department" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="类型" :label-width="modifyLabelWidth">
+            <el-select v-model="modifyForm.type" placeholder="请选择类型">
+              <el-option label="机关部门" value=0></el-option>
+              <el-option label="教学单位" value=1></el-option>
+              <el-option label="教辅/科研单位" value=2></el-option>
+              <el-option label="群团/附属单位" value=3></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态" :label-width="modifyLabelWidth">
+            <el-select v-model="modifyForm.status" placeholder="请选择状态">
+              <el-option label="未启用" value=0></el-option>
+              <el-option label="启用" value=1></el-option>
+            </el-select>
+          </el-form-item>
 
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="modifyFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="modifySubmit">确 定</el-button>
-      </div>
-    </el-dialog>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="modifyFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="modifySubmit">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -136,6 +161,12 @@
           department: '',
           status: '',
           type: ''
+        },
+        addFormVisible: false,
+        addForm: {
+          department: '',
+          type: '',
+          status: ''
         },
         modifyLabelWidth: '120px'
       }
@@ -198,6 +229,27 @@
             })
           })
           .catch(() => {
+            this.$message({
+              type: 'error',
+              message: '网络故障'
+            })
+          })
+      },
+      addSubmit () {
+        this.$ajax.post('', this.addForm)
+          .then((res) => {
+            // 这一块 还差一个时间和id没更新
+            this.$message = {
+              type: 'success',
+              message: '添加成功'
+            }
+          })
+          .catch(() => {
+            var o = {}
+            o.department = this.addForm.department
+            o.type = this.addForm.type
+            o.status = this.addForm.status
+            this.tableData.push(o)
             this.$message({
               type: 'error',
               message: '网络故障'
