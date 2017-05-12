@@ -166,6 +166,7 @@
         this.modifyFormVisible = false
         this.$ajax.post('', this.modifyForm)
           .then((res) => {
+          // 这一块 还差一个时间没更新
             this.tableData[this.modifyForm.index].id = this.modifyForm.id
             this.tableData[this.modifyForm.index].department = this.modifyForm.department
             this.tableData[this.modifyForm.index].type = this.modifyForm.type
