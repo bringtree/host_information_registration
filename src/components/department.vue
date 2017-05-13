@@ -5,7 +5,12 @@
       <el-dialog title="点击添加部门" v-model="addFormVisible">
         <el-form :model="addForm">
           <el-form-item label="部门类型" :label-width="modifyLabelWidth">
-            <el-input v-model="addForm.type"></el-input>
+            <el-select v-model="addForm.type" placeholder="请选择类型">
+              <el-option label="机关部门" value=0></el-option>
+              <el-option label="教学单位" value=1></el-option>
+              <el-option label="教辅/科研单位" value=2></el-option>
+              <el-option label="群团/附属单位" value=3></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="部门名字" :label-width="modifyLabelWidth">
             <el-input v-model="addForm.department"></el-input>
@@ -68,7 +73,7 @@
           width="180">
           <template scope="scope">
             <el-icon name="time"></el-icon>
-            <span style="margin-left: 10px">{{ scope.row.updateTime }}</span>
+            <span style="margin-left: 10px">{{ scope.row.update_time }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作"
@@ -132,26 +137,26 @@
             'type': '0',
             'department': '重在参与',
             'status': '1',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           },
           {
             'id': '2',
             'type': '1',
             'department': '党委办公室',
             'status': '0',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           },
           {
             'id': '2',
             'type': '2',
             'department': '党委统战部',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           },
           {
             'id': '3',
             'type': '3',
             'department': '校长办公室',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           }
         ],
         modifyFormVisible: false,
