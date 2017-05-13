@@ -21,19 +21,19 @@
 
       <el-table-column fixed="right" label="操作" width="100">
         <template scope="scope">
-          <el-button @click="handleClick" type="text" size="small">查看详情</el-button>
+          <el-button @click="handleClick(scope.$index, scope.row)" type="text" size="small">查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <div class="block">
+    <div class="block" v-show="allowToShow">
       <el-pagination
-        @size-change="handleSizeChange"
+        class="pagination"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage1"
-        :page-size="100"
+        :page-size="20"
         layout="total, prev, pager, next"
-        :total="1000">
+        :total="totalInfo">
       </el-pagination>
     </div>
   </div>
@@ -46,32 +46,47 @@
       return {
         allowToShow: false,
         searchInfo: '',
-        hostSimpleInfo: [
-          {
-            address: '东区',
-            vm_server_name: '123456',
-            department: '软件学院',
-            ip_address: '123465',
-            operating_system: 'centos 7',
-            vm_responsible: 'Z',
-            vm_responsible_phone: '12345667897'
-          }
-        ],
-        currentPage1: 5
+        hostSimpleInfo: [],
+        // totalInfo为后台发送回来一共有多少符合的数据
+        totalInfo: 1000,
+        currentPage1: 1,
+        requestInfo: {
+          page: '',
+          limit: ''
+        }
       }
     },
     methods: {
-      handleClick () {
-        console.log(1)
+      handleClick (index, row) {
+        this.$router.push({path: '/hostDetailed', query: { queryInfoID: index }})
       },
       handleIconClick () {
         this.allowToShow = true
+        // 在这里加上搜索的ajax操作
+        this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo.php', this.requestInfo)
+        .then((res) => {
+          // console.log(JSON.parse(res.data.data))
+          this.hostSimpleInfo = JSON.parse(res.data.data)
+        }).catch(() => {
+          this.err()
+        })
       },
-      handleSizeChange (val) {
-        console.log(`每页 ${val} 条`)
-      },
+      // 下面的分页也要写ajax，要和后端协商好，如何拿数据
       handleCurrentChange (val) {
-        console.log(`当前页: ${val}`)
+        // console.log(`当前页: ${val}`)
+        this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo_2.php', this.requestInfo)
+          .then((res) => {
+            this.hostSimpleInfo = JSON.parse(res.data.data)
+          }).catch(() => {
+            this.err()
+          })
+      },
+      err: function () {
+        this.$message({
+          showClose: true,
+          message: '网络异常',
+          type: 'error'
+        })
       }
     }
   }
@@ -80,5 +95,11 @@
 <style scpoed>
   .inputStyle {
     margin: 20px 0 20px 20px;
+  }
+  .pagination {
+    width: 344.19px;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 30px;
   }
 </style>

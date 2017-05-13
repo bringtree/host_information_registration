@@ -190,7 +190,7 @@
       </el-form-item>
 
       <el-form-item label="开通时间" prop="opening_time">
-        <el-date-picker type="datetime" @change="opening_time_change" v-model="hostInfo.opening_time" placeholder="选择开通日期时间" style="width: 100%;"></el-date-picker>
+        <el-date-picker v-model="hostInfo.opening_time" type="datetime" @change="opening_time_change" placeholder="选择开通日期时间" style="width: 100%;"></el-date-picker>
       </el-form-item>
 
       <el-form-item label="主机责任人" prop="vm_responsible">
@@ -304,16 +304,33 @@
     methods: {
       submithostInfo: function () {
         // 提交表单的数据操作
-        console.log(this.hostInfo)
         // 记得加上判断，必填信息填完才可以提交
-        if (this.hostInfo) {
-          this.suc()
+        if (this.hostInfo.re_pool && this.hostInfo.vm_server_name &&
+            this.hostInfo.department && this.hostInfo.operating_system &&
+            this.hostInfo.num_bit && this.hostInfo.kernel &&
+            this.hostInfo.ram && this.hostInfo.hard_disk_1 &&
+            this.hostInfo.hard_disk_2 && this.hostInfo.network_tag &&
+            this.hostInfo.ip_address && this.hostInfo.dongle &&
+            this.hostInfo.admin_account && this.hostInfo.admin_psw) {
+          // 缺少请求地址
+          this.$ajax.post('http://localhost/hostInfo/addHost.php', this.hostInfo)
+          .then((res) => {
+            // 提交成功重置表单和显示消息提示
+            if (res.data.type === 'success') {
+              this.resetForm('hostInfo')
+              this.suc()
+            }
+            // 考虑加上失败的提醒语句
+          }).catch(() => {
+            this.err()
+          })
         } else {
-          this.err()
+          this.warn()
         }
       },
       resetForm: function (formName) {
         this.$refs[formName].resetFields()
+        this.resetSuc()
       },
       // 用element-ui提供的change回调返回格式化的数据
       // 因为暂时想不到办法判断是哪个时间触发的，所以先写了两个
@@ -326,17 +343,29 @@
       suc: function () {
         this.$message({
           showClose: true,
-          // message为返回的信息
-          message: '恭喜你，这是一条成功消息',
+          message: '添加成功',
           type: 'success'
         })
       },
       err: function () {
         this.$message({
           showClose: true,
-          // message为返回的信息
-          message: '错了哦，这是一条错误消息',
+          message: '网络异常',
           type: 'error'
+        })
+      },
+      warn: function () {
+        this.$message({
+          showClose: true,
+          message: '红*为必填信息',
+          type: 'warning'
+        })
+      },
+      resetSuc: function () {
+        this.$message({
+          showClose: true,
+          message: '重置表单成功',
+          type: 'success'
         })
       }
     }

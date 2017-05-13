@@ -180,16 +180,30 @@
         <div class="contentLeft">状态</div>
         <div class="contentRight">{{ hostInfo.status }}</div>
       </div>
+
+      <hr>
+
+      <div class="text item clearfix">
+        <div class="contentLeft">注册时间</div>
+        <div class="contentRight">{{ hostInfo.create_time }}</div>
+      </div>
+
+      <hr>
+
+      <div class="text item clearfix">
+        <div class="contentLeft">更新时间</div>
+        <div class="contentRight">{{ hostInfo.update_time }}</div>
+      </div>
     </el-card>
 
 
     <el-dialog title="修改主机信息" :visible.sync="dialogFormVisible" top="0">
       <el-form :model="hostInfo">
-        <el-form-item label="信息录入人" prop="username" :label-width="formLabelWidth">
+        <el-form-item label="信息录入人" prop="username">
           <el-input v-model="hostInfo.username" placeholder="请输入信息录入人名字"></el-input>
         </el-form-item>
 
-        <el-form-item label="机房位置" prop="address" :label-width="formLabelWidth">
+        <el-form-item label="机房位置" prop="address">
           <el-select v-model="hostInfo.address" placeholder="请选择机房位置" style="width:100%">
             <el-option label="华山" value="华山"></el-option>
             <el-option label="东区" value="东区"></el-option>
@@ -197,7 +211,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="网络标签" prop="network_tag" :label-width="formLabelWidth">
+        <el-form-item label="网络标签" prop="network_tag">
           <el-select v-model="hostInfo.network_tag" placeholder="请选择网络标签" style="width:100%">
             <el-option label="MetcServers" value="MetcServers"></el-option>
             <el-option label="DepartmentServers" value="DepartmentServers"></el-option>
@@ -213,7 +227,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="所属部门" prop="department" :label-width="formLabelWidth">
+        <el-form-item label="所属部门" prop="department">
           <el-select v-model="hostInfo.department" placeholder="请选择所属部门" style="width:100%">
             <el-option-group label="机关部处" value="机关部处">
               <el-option label="党委办公室" value="党委办公室"></el-option>
@@ -299,7 +313,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="操作系统" prop="operating_system" :label-width="formLabelWidth">
+        <el-form-item label="操作系统" prop="operating_system">
           <el-select v-model="hostInfo.operating_system" placeholder="请选择操作系统" style="width:100%">
             <el-option label="centos6" value="centos6"></el-option>
             <el-option label="centos7" value="centos7"></el-option>
@@ -314,88 +328,88 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="所属资源池" prop="re_pool" :label-width="formLabelWidth">
+        <el-form-item label="所属资源池" prop="re_pool">
           <el-input v-model="hostInfo.re_pool" placeholder="请输入所属资源池"></el-input>
         </el-form-item>
 
-        <el-form-item label="虚机服务器名称" prop="vm_server_name" :label-width="formLabelWidth">
+        <el-form-item label="虚机服务器名称" prop="vm_server_name">
           <el-input v-model="hostInfo.vm_server_name" placeholder="请输入虚机服务器名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="位数" prop="num_bit" :label-width="formLabelWidth">
+        <el-form-item label="位数" prop="num_bit">
           <el-select v-model="hostInfo.num_bit" placeholder="请选择操作系统位数" style="width:100%">
             <el-option label="32位" value="0"></el-option>
             <el-option label="64位" value="1"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="cpu(核数)" prop="kernel" :label-width="formLabelWidth">
+        <el-form-item label="cpu(核数)" prop="kernel">
           <el-input v-model="hostInfo.kernel" placeholder="请输入cpu(核数)"></el-input>
         </el-form-item>
 
-        <el-form-item label="内存（GB）" prop="ram" :label-width="formLabelWidth">
+        <el-form-item label="内存（GB）" prop="ram">
           <el-input v-model="hostInfo.ram" placeholder="请输入内存（GB）"></el-input>
         </el-form-item>
 
-        <el-form-item label="硬盘1（GB）" prop="hard_disk_1" :label-width="formLabelWidth">
+        <el-form-item label="硬盘1（GB）" prop="hard_disk_1">
           <el-input v-model="hostInfo.hard_disk_1" placeholder="请输入硬盘1（GB）"></el-input>
         </el-form-item>
 
-        <el-form-item label="硬盘2（GB）" prop="hard_disk_2" :label-width="formLabelWidth">
+        <el-form-item label="硬盘2（GB）" prop="hard_disk_2">
           <el-input v-model="hostInfo.hard_disk_2" placeholder="请输入硬盘2（GB）"></el-input>
         </el-form-item>
 
-        <el-form-item label="ip地址" prop="ip_address" :label-width="formLabelWidth">
+        <el-form-item label="ip地址" prop="ip_address">
           <el-input v-model="hostInfo.ip_address" placeholder="请输入ip地址"></el-input>
         </el-form-item>
 
-        <el-form-item label="是否有加密狗" prop="dongle" :label-width="formLabelWidth">
+        <el-form-item label="是否有加密狗" prop="dongle">
           <el-select v-model="hostInfo.dongle" placeholder="请选择是否有加密狗" style="width:100%">
             <el-option label="无" value="0"></el-option>
             <el-option label="有" value="1"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="管理员账号" prop="admin_account" :label-width="formLabelWidth">
+        <el-form-item label="管理员账号" prop="admin_account">
           <el-input v-model="hostInfo.admin_account" placeholder="请输入管理员账号"></el-input>
         </el-form-item>
 
-        <el-form-item label="管理员密码" prop="admin_psw" :label-width="formLabelWidth">
+        <el-form-item label="管理员密码" prop="admin_psw">
           <el-input v-model="hostInfo.admin_psw" placeholder="请输入管理员密码"></el-input>
         </el-form-item>
 
-        <el-form-item label="堡垒机对应账号" prop="sas_account" :label-width="formLabelWidth">
+        <el-form-item label="堡垒机对应账号" prop="sas_account">
           <el-input v-model="hostInfo.sas_account" placeholder="请输入堡垒机对应账号"></el-input>
         </el-form-item>
 
-        <el-form-item label="堡垒机对应账号密码" prop="sas_password" :label-width="formLabelWidth">
+        <el-form-item label="堡垒机对应账号密码" prop="sas_password">
           <el-input v-model="hostInfo.sas_password" placeholder="请输入堡垒机对应账号密码"></el-input>
         </el-form-item>
 
-        <el-form-item label="开通时间" prop="opening_time" :label-width="formLabelWidth">
+        <el-form-item label="开通时间" prop="opening_time">
           <el-date-picker type="datetime" @change="opening_time_change" v-model="hostInfo.opening_time" placeholder="选择开通日期时间" style="width: 100%;"></el-date-picker>
         </el-form-item>
 
-        <el-form-item label="主机责任人" prop="vm_responsible" :label-width="formLabelWidth">
+        <el-form-item label="主机责任人" prop="vm_responsible">
           <el-input v-model="hostInfo.vm_responsible" placeholder="请输入主机责任人"></el-input>
         </el-form-item>
 
-        <el-form-item label="责任人联系电话" prop="vm_responsible_phone" :label-width="formLabelWidth">
+        <el-form-item label="责任人联系电话" prop="vm_responsible_phone">
           <el-input v-model="hostInfo.vm_responsible_phone" placeholder="请输入责任人联系电话"></el-input>
         </el-form-item>
 
-        <el-form-item label="新应用上线是否检测" prop="online_detection" :label-width="formLabelWidth">
+        <el-form-item label="新应用上线是否检测" prop="online_detection">
           <el-select v-model="hostInfo.online_detection" placeholder="请选择新应用上线是否检测" style="width:100%">
             <el-option label="否" value="0"></el-option>
             <el-option label="有" value="1"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="检测时间" prop="detection_time" :label-width="formLabelWidth">
+        <el-form-item label="检测时间" prop="detection_time">
           <el-date-picker type="datetime" @change="detection_time_change" v-model="hostInfo.detection_time" placeholder="请选择检测日期时间" style="width: 100%;"></el-date-picker>
         </el-form-item>
 
-        <el-form-item label="备注" prop="remark" :label-width="formLabelWidth">
+        <el-form-item label="备注" prop="remark">
           <el-input type="textarea" :rows="10" resize="none" v-model="hostInfo.remark" placeholder="请输入备注"></el-input>
         </el-form-item>
       </el-form>
@@ -438,9 +452,12 @@
           online_detection: '',
           detection_time: '',
           remark: '',
-          status: ''
+          status: '',
+          create_time: '',
+          update_time: ''
         },
-        dialogFormVisible: false
+        dialogFormVisible: false,
+        queryInfoID: ''
       }
     },
     methods: {
@@ -450,11 +467,49 @@
       submitChangeInfo: function () {
         this.dialogFormVisible = false
         // 在这里加上提交修改数据的ajax操作
+        this.$ajax.post('http://localhost/hostInfo/hostDetailed.php', this.hostInfo)
+          .then((res) => {
+            this.suc()
+          }).catch(() => {
+            this.err()
+          })
+      },
+      err: function () {
+        this.$message({
+          showClose: true,
+          message: '网络异常',
+          type: 'error'
+        })
+      },
+      suc: function () {
+        this.$message({
+          showClose: true,
+          message: '修改成功',
+          type: 'success'
+        })
+      },
+      // 用element-ui提供的change回调返回格式化的数据
+      // 因为暂时想不到办法判断是哪个时间触发的，所以先写了两个
+      opening_time_change: function (val) {
+        this.hostInfo.opening_time = val
+      },
+      detection_time_change: function (val) {
+        this.hostInfo.detection_time = val
       }
     },
     mounted: function () {
       // 在这里加上初始化的数据操作
-      // 用id请求后台数据
+      // 拿到router传的query参数queryInfoID
+      // 用queryInfoID请求后台数据
+      this.queryInfoID = this.$route.query.queryInfoID
+      // 缺少请求地址
+      this.$ajax.post('http://localhost/hostInfo/hostDetailed.php', this.queryInfoID)
+        .then((res) => {
+          // 将返回的数据赋给this.hostInfo
+          this.hostInfo = JSON.parse(res.data.data)
+        }).catch(() => {
+          this.err()
+        })
     }
   }
 </script>
