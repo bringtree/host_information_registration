@@ -5,7 +5,12 @@
       <el-dialog title="点击添加部门" v-model="addFormVisible">
         <el-form :model="addForm">
           <el-form-item label="部门类型" :label-width="modifyLabelWidth">
-            <el-input v-model="addForm.type"></el-input>
+            <el-select v-model="addForm.type" placeholder="请选择类型">
+              <el-option label="机关部门" value=0></el-option>
+              <el-option label="教学单位" value=1></el-option>
+              <el-option label="教辅/科研单位" value=2></el-option>
+              <el-option label="群团/附属单位" value=3></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="部门名字" :label-width="modifyLabelWidth">
             <el-input v-model="addForm.department"></el-input>
