@@ -9,6 +9,7 @@ import department from '@/components/department'
 import networkLabel from '@/components/networkLabel'
 import admin from '@/components/admin'
 import hostDetailed from '@/components/hostDetailed'
+import addDepartment from '@/components/addDepartment'
 
 Vue.use(Router)
 
@@ -43,6 +44,11 @@ export default new Router({
           path: '/search',
           name: 'search',
           component: search
+        },
+        {
+          path: '/adddepartment',
+          name: 'addDepartment',
+          component: addDepartment
         },
         {
           path: '/department',
