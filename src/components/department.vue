@@ -73,7 +73,7 @@
           width="180">
           <template scope="scope">
             <el-icon name="time"></el-icon>
-            <span style="margin-left: 10px">{{ scope.row.updateTime }}</span>
+            <span style="margin-left: 10px">{{ scope.row.update_time }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作"
@@ -137,26 +137,26 @@
             'type': '0',
             'department': '重在参与',
             'status': '1',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           },
           {
             'id': '2',
             'type': '1',
             'department': '党委办公室',
             'status': '0',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           },
           {
             'id': '2',
             'type': '2',
             'department': '党委统战部',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           },
           {
             'id': '3',
             'type': '3',
             'department': '校长办公室',
-            'updateTime': 'xxxx-xx-xx'
+            'update_time': 'xxxx-xx-xx'
           }
         ],
         modifyFormVisible: false,
