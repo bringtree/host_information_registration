@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1 class="headerStyle">详情页</h1>
+    <header class="headerStyle">详  情  页</header>
 
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span style="line-height: 36px;">主机详细信息</span>
+        <span class="card-header" style="line-height: 36px;">主机详细信息</span>
         <el-button style="float: right;" type="primary" @click="diologShow">编辑</el-button>
       </div>
 
@@ -402,7 +402,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submitChangeInfo">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -414,40 +414,47 @@
     data () {
       return {
         hostInfo: {
-          username: '1',
-          address: '1',
-          network_tag: '1',
-          department: '1',
-          operating_system: '1',
-          re_pool: '1',
-          vm_server_name: '1',
-          num_bit: '1',
-          kernel: '1',
-          ram: '1',
-          hard_disk_1: '1',
-          hard_disk_2: '1',
-          ip_address: '1',
-          dongle: '1',
-          admin_account: '1',
-          admin_psw: '1',
-          sas_account: '1',
-          sas_password: '1',
-          opening_time: '1',
-          vm_responsible: '1',
-          vm_responsible_phone: '1',
-          online_detection: '1',
-          detection_time: '1',
-          remark: '1',
-          status: '1'
+          username: '',
+          address: '',
+          network_tag: '',
+          department: '',
+          operating_system: '',
+          re_pool: '',
+          vm_server_name: '',
+          num_bit: '',
+          kernel: '',
+          ram: '',
+          hard_disk_1: '',
+          hard_disk_2: '',
+          ip_address: '',
+          dongle: '',
+          admin_account: '',
+          admin_psw: '',
+          sas_account: '',
+          sas_password: '',
+          opening_time: '',
+          vm_responsible: '',
+          vm_responsible_phone: '',
+          online_detection: '',
+          detection_time: '',
+          remark: '',
+          status: ''
         },
         dialogFormVisible: false
       }
     },
     methods: {
       diologShow: function () {
-        console.log(1)
         this.dialogFormVisible = true
+      },
+      submitChangeInfo: function () {
+        this.dialogFormVisible = false
+        // 在这里加上提交修改数据的ajax操作
       }
+    },
+    mounted: function () {
+      // 在这里加上初始化的数据操作
+      // 用id请求后台数据
     }
   }
 </script>
@@ -461,6 +468,11 @@
     text-align: center;
     color: #B6C6D4;
     background: #324157;
+    font-size: 20px;
+  }
+  .card-header {
+    font-size: 20px;
+    font-weight: bold;
   }
   .text {
     font-size: 14px;
