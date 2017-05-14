@@ -1,7 +1,5 @@
 <template>
   <div>
-    <header class="headerStyle">详  情  页</header>
-
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span class="card-header" style="line-height: 36px;">主机详细信息</span>
@@ -409,6 +407,13 @@
           <el-date-picker type="datetime" @change="detection_time_change" v-model="hostInfo.detection_time" placeholder="请选择检测日期时间" style="width: 100%;"></el-date-picker>
         </el-form-item>
 
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="hostInfo.status" placeholder="请选择状态" style="width:100%">
+            <el-option label="未启用" value="0"></el-option>
+            <el-option label="已启用" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="备注" prop="remark">
           <el-input type="textarea" :rows="10" resize="none" v-model="hostInfo.remark" placeholder="请输入备注"></el-input>
         </el-form-item>
@@ -469,7 +474,11 @@
         // 在这里加上提交修改数据的ajax操作
         this.$ajax.post('http://localhost/hostInfo/hostDetailed.php', this.hostInfo)
           .then((res) => {
-            this.suc()
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            })
           }).catch(() => {
             this.err()
           })
@@ -479,13 +488,6 @@
           showClose: true,
           message: '网络异常',
           type: 'error'
-        })
-      },
-      suc: function () {
-        this.$message({
-          showClose: true,
-          message: '修改成功',
-          type: 'success'
         })
       },
       // 用element-ui提供的change回调返回格式化的数据
@@ -505,8 +507,28 @@
       // 缺少请求地址
       this.$ajax.post('http://localhost/hostInfo/hostDetailed.php', this.queryInfoID)
         .then((res) => {
-          // 将返回的数据赋给this.hostInfo
           this.hostInfo = JSON.parse(res.data.data)
+          // 将操作系统位数，是否有加密狗，新应用上线是否检测，状态转化为文字信息
+          if (this.hostInfo.num_bit === '0') {
+            this.hostInfo.num_bit = '32位'
+          } else if (this.hostInfo.num_bit === '1') {
+            this.hostInfo.num_bit = '64位'
+          }
+          if (this.hostInfo.dongle === '0') {
+            this.hostInfo.dongle = '无'
+          } else if (this.hostInfo.dongle === '1') {
+            this.hostInfo.dongle = '有'
+          }
+          if (this.hostInfo.online_detection === '0') {
+            this.hostInfo.online_detection = '否'
+          } else if (this.hostInfo.online_detection === '1') {
+            this.hostInfo.online_detection = '有'
+          }
+          if (this.hostInfo.status === '0') {
+            this.hostInfo.status = '未启用'
+          } else if (this.hostInfo.status === '1') {
+            this.hostInfo.status = '已启用'
+          }
         }).catch(() => {
           this.err()
         })
@@ -516,15 +538,6 @@
 
 
 <style scoped>
-  .headerStyle {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    color: #B6C6D4;
-    background: #324157;
-    font-size: 20px;
-  }
   .card-header {
     font-size: 20px;
     font-weight: bold;

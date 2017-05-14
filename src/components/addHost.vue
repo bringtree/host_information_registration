@@ -151,15 +151,15 @@
       </el-form-item>
 
       <el-form-item label="内存（GB）" prop="ram">
-        <el-input v-model="hostInfo.ram" placeholder="请输入内存（GB）"></el-input>
+        <el-input v-model.number="hostInfo.ram" placeholder="请输入内存（GB）"></el-input>
       </el-form-item>
 
       <el-form-item label="硬盘1（GB）" prop="hard_disk_1">
-        <el-input v-model="hostInfo.hard_disk_1" placeholder="请输入硬盘1（GB）"></el-input>
+        <el-input v-model.number="hostInfo.hard_disk_1" placeholder="请输入硬盘1（GB）"></el-input>
       </el-form-item>
 
       <el-form-item label="硬盘2（GB）" prop="hard_disk_2">
-        <el-input v-model="hostInfo.hard_disk_2" placeholder="请输入硬盘2（GB）"></el-input>
+        <el-input v-model.number="hostInfo.hard_disk_2" placeholder="请输入硬盘2（GB）"></el-input>
       </el-form-item>
 
       <el-form-item label="ip地址" prop="ip_address">
@@ -198,7 +198,7 @@
       </el-form-item>
 
       <el-form-item label="责任人联系电话" prop="vm_responsible_phone">
-        <el-input v-model="hostInfo.vm_responsible_phone" placeholder="请输入责任人联系电话"></el-input>
+        <el-input  v-model.number="hostInfo.vm_responsible_phone" placeholder="请输入责任人联系电话"></el-input>
       </el-form-item>
 
       <el-form-item label="新应用上线是否检测" prop="online_detection">
@@ -212,12 +212,19 @@
         <el-date-picker type="datetime" @change="detection_time_change" v-model="hostInfo.detection_time" placeholder="请选择检测日期时间" style="width: 100%;"></el-date-picker>
       </el-form-item>
 
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="hostInfo.status" placeholder="请选择状态" style="width:100%">
+          <el-option label="未启用" value="0"></el-option>
+          <el-option label="已启用" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="备注" prop="remark">
         <el-input type="textarea" :rows="10" resize="none" v-model="hostInfo.remark" placeholder="请输入备注"></el-input>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="danger" @click="resetForm('hostInfo')">重置表单</el-button>
+        <el-button type="danger" @click="clickToResetForm">重置表单</el-button>
         <el-button type="success" class="toRight" @click="submithostInfo">立即添加</el-button>
       </el-form-item>
     </el-form>
@@ -253,7 +260,8 @@
           vm_responsible_phone: '',
           online_detection: '',
           detection_time: '',
-          remark: ''
+          remark: '',
+          status: ''
         },
         rules: {
           re_pool: [
@@ -275,13 +283,16 @@
             { required: true, message: 'cpu(核数)不能为空' }
           ],
           ram: [
-            { required: true, message: '内存（GB）不能为空' }
+            { required: true, message: '内存（GB）不能为空' },
+            { type: 'number', message: '内存（GB）必须为数字值' }
           ],
           hard_disk_1: [
-            { required: true, message: '硬盘1（GB）不能为空' }
+            { required: true, message: '硬盘1（GB）不能为空' },
+            { type: 'number', message: '硬盘1（GB）必须为数字值' }
           ],
           hard_disk_2: [
-            { required: true, message: '硬盘2（GB）不能为空' }
+            { required: true, message: '硬盘2（GB）不能为空' },
+            { type: 'number', message: '硬盘2（GB）必须为数字值' }
           ],
           network_tag: [
             { required: true, message: '请选择网络标签' }
@@ -297,6 +308,9 @@
           ],
           admin_psw: [
             { required: true, message: '管理员密码不能为空' }
+          ],
+          vm_responsible_phone: [
+            { type: 'number', message: '责任人联系电话必须为数字值' }
           ]
         }
       }
@@ -318,19 +332,30 @@
             // 提交成功重置表单和显示消息提示
             if (res.data.type === 'success') {
               this.resetForm('hostInfo')
-              this.suc()
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
             }
             // 考虑加上失败的提醒语句
           }).catch(() => {
-            this.err()
+            this.$message({
+              showClose: true,
+              message: '网络异常',
+              type: 'error'
+            })
           })
         } else {
-          this.warn()
+          this.$message({
+            showClose: true,
+            message: '红*为必填信息',
+            type: 'warning'
+          })
         }
       },
       resetForm: function (formName) {
         this.$refs[formName].resetFields()
-        this.resetSuc()
       },
       // 用element-ui提供的change回调返回格式化的数据
       // 因为暂时想不到办法判断是哪个时间触发的，所以先写了两个
@@ -340,34 +365,22 @@
       detection_time_change: function (val) {
         this.hostInfo.detection_time = val
       },
-      suc: function () {
-        this.$message({
-          showClose: true,
-          message: '添加成功',
-          type: 'success'
-        })
-      },
-      err: function () {
-        this.$message({
-          showClose: true,
-          message: '网络异常',
-          type: 'error'
-        })
-      },
-      warn: function () {
-        this.$message({
-          showClose: true,
-          message: '红*为必填信息',
-          type: 'warning'
-        })
-      },
-      resetSuc: function () {
+      clickToResetForm: function () {
+        this.resetForm('hostInfo')
         this.$message({
           showClose: true,
           message: '重置表单成功',
           type: 'success'
         })
+      },
+      comeinAndResetForm: function () {
+        this.resetForm('hostInfo')
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        vm.comeinAndResetForm()
+      })
     }
   }
 </script>
