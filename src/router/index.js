@@ -15,16 +15,6 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'login',
-      component: login
-    },
-    {
-      path: '/hostDetailed',
-      name: 'hostDetailed',
-      component: hostDetailed
-    },
-    {
       path: '/home',
       name: 'home',
       component: home,
@@ -58,8 +48,18 @@ export default new Router({
           path: '/admin',
           name: 'admin',
           component: admin
+        },
+        {
+          path: '/hostDetailed',
+          name: 'hostDetailed',
+          component: hostDetailed
         }
       ]
+    },
+    {
+      path: '/',
+      name: 'login',
+      component: login
     }
   ]
 })

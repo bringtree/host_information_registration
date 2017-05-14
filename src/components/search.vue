@@ -22,6 +22,7 @@
       <el-table-column fixed="right" label="操作" width="100">
         <template scope="scope">
           <el-button @click="handleClick(scope.$index, scope.row)" type="text" size="small">查看详情</el-button>
+          <el-button @click="handleDelete(scope.$index, scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -30,8 +31,8 @@
       <el-pagination
         class="pagination"
         @current-change="handleCurrentChange"
-        :current-page.sync="currentPage1"
-        :page-size="20"
+        :current-page.sync="currentPage"
+        :page-size="pageSize"
         layout="total, prev, pager, next"
         :total="totalInfo">
       </el-pagination>
@@ -47,36 +48,63 @@
         allowToShow: false,
         searchInfo: '',
         hostSimpleInfo: [],
-        // totalInfo为后台发送回来一共有多少符合的数据
-        totalInfo: 1000,
-        currentPage1: 1,
-        requestInfo: {
-          page: '',
-          limit: ''
+        // totalInfo为后台发送回来一共有多少符合的数据,为int类型
+        totalInfo: 0,
+        pageSize: 10,
+        currentPage: 1,
+        requiredInfo: {
+          page: 1,
+          limit: 10
         }
       }
     },
     methods: {
       handleClick (index, row) {
-        this.$router.push({path: '/hostDetailed', query: { queryInfoID: index }})
+        this.$router.push({path: '/hostDetailed', query: { queryInfoID: row.id }})
+      },
+      handleDelete (index, row) {
+        this.$confirm('此操作将删除该条主机信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then((res) => {
+          if (res === 'confirm') {
+            this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo_2.php', row.id)
+              .then((res) => {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                })
+              })
+              .catch(() => {
+                this.err()
+              })
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
       },
       handleIconClick () {
         this.allowToShow = true
         // 在这里加上搜索的ajax操作
-        this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo.php', this.requestInfo)
+        this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo.php', this.requiredInfo)
         .then((res) => {
-          // console.log(JSON.parse(res.data.data))
           this.hostSimpleInfo = JSON.parse(res.data.data)
+          this.totalInfo = Number(res.data.totalInfo)
         }).catch(() => {
           this.err()
         })
       },
       // 下面的分页也要写ajax，要和后端协商好，如何拿数据
       handleCurrentChange (val) {
-        // console.log(`当前页: ${val}`)
-        this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo_2.php', this.requestInfo)
+        this.requiredInfo.page = val
+        this.$ajax.post('http://localhost/hostInfo/hostSimpleInfo_2.php', this.requiredInfo)
           .then((res) => {
             this.hostSimpleInfo = JSON.parse(res.data.data)
+            this.totalInfo = Number(res.data.totalInfo)
           }).catch(() => {
             this.err()
           })
@@ -86,6 +114,21 @@
           showClose: true,
           message: '网络异常',
           type: 'error'
+        })
+      },
+      hideTable: function () {
+        this.searchInfo = ''
+        this.allowToShow = false
+        this.currentPage = 1
+        this.requiredInfo.page = 1
+      }
+    },
+    beforeRouteEnter (to, from, next) {
+      if (from.path === '/hostDetailed') {
+        next()
+      } else {
+        next(vm => {
+          vm.hideTable()
         })
       }
     }
