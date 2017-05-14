@@ -28,17 +28,18 @@
       <el-table
         :data="tableData"
         border
+        :default-sort="{prop: 'date', order: 'descending'}"
         style="width: 100%">
         <el-table-column
           label="id"
-          sortable
-          width="180">
+          width="100">
           <template scope="scope">
             <span style="margin-left: 10px">{{ scope.row.id }}</span>
           </template>
         </el-table-column>
         <el-table-column
           label="网络标签名称"
+          width="300"
         >
           <template scope="scope">
             <span style="margin-left: 10px">{{ scope.row.name }}</span>
@@ -62,8 +63,9 @@
         </el-table-column>
         <el-table-column
           label="最后修改日期"
+          prop="date"
           sortable
-          width="180">
+          width="250">
           <template scope="scope">
             <el-icon name="time"></el-icon>
             <span style="margin-left: 10px">{{ scope.row.update_time }}</span>
@@ -118,34 +120,7 @@
   export default {
     data () {
       return {
-        tableData: [
-          {
-            'id': '1',
-            'name': '0',
-            'valn_id': '重在参与',
-            'status': '1',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '2',
-            'name': '1',
-            'valn_id': '党委办公室',
-            'status': '0',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '2',
-            'name': '2',
-            'valn_id': '党委统战部',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '3',
-            'name': '3',
-            'valn_id': '校长办公室',
-            'update_time': 'xxxx-xx-xx'
-          }
-        ],
+        tableData: [],
         modifyFormVisible: false,
         addFormVisible: false,
         modifyForm: {
@@ -189,13 +164,15 @@
                 this.tableData.splice(this.modifyForm.index, 1)
                 this.$message({
                   type: 'success',
-                  message: '删除成功!'
+                  message: '删除成功!',
+                  showClose: true
                 })
               })
               .catch(() => {
                 this.$message({
                   type: 'error',
-                  message: '网络故障'
+                  message: '网络故障',
+                  showClose: true
                 })
               })
           }
@@ -217,13 +194,15 @@
             this.tableData[this.modifyForm.index].status = this.modifyForm.status
             this.$message({
               type: 'success',
-              message: '编辑成功!'
+              message: '编辑成功!',
+              showClose: true
             })
           })
           .catch(() => {
             this.$message({
               type: 'error',
-              message: '网络故障'
+              message: '网络故障',
+              showClose: true
             })
           })
       },
@@ -238,16 +217,28 @@
             this.tableData.push(o)
             this.$message = {
               type: 'success',
-              message: '添加成功'
+              message: '添加成功',
+              showClose: true
             }
           })
           .catch(() => {
             this.$message({
               type: 'error',
-              message: '网络故障'
+              message: '网络故障',
+              showClose: true
             })
           })
       }
+    },
+    mounted () {
+      this.$ajax.get('/network/info')
+        .then((res) => {
+          this.tableData = res.data.message
+          console.log(res.data)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
     }
   }
 </script>

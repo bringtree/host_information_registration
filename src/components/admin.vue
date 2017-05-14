@@ -8,10 +8,11 @@
             <el-input v-model="registerForm.username" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" :label-width="modifyLabelWidth">
-            <el-input v-model="registerForm.password" auto-complete="off"></el-input>
+            <el-input type="password" v-model="registerForm.password" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="确认密码" :label-width="modifyLabelWidth">
-            <el-input v-model="registerForm.password" auto-complete="off"></el-input>
+            <el-input type="password" v-model="registerForm.password_verify" auto-complete="off"></el-input>
+            <div class="el-form-item__error" v-if="warnWord_register">{{registerForm.username===''?'用户名不能为空':'两次输入的密码不一致'}}</div>
           </el-form-item>
           <el-form-item label="状态" :label-width="modifyLabelWidth">
             <el-select v-model="registerForm.status" placeholder="请选择状态">
@@ -22,7 +23,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="registerFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="registerSubmit">确 定</el-button>
+          <el-button type="primary" @click="registerSubmit" :disabled="warnWord_register">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -49,14 +50,6 @@
         </el-table-column>
 
         <el-table-column
-          label="用户密码"
-        >
-          <template scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.password }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column
           label="状态"
         >
           <template scope="scope">
@@ -66,7 +59,7 @@
         <el-table-column
           label="最后修改日期"
           sortable
-          width="180">
+          width="250">
           <template scope="scope">
             <el-icon name="time"></el-icon>
             <span style="margin-left: 10px">{{ scope.row.update_time }}</span>
@@ -96,7 +89,13 @@
             <el-input v-model="modifyForm.username" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" :label-width="modifyLabelWidth">
-            <el-input v-model="modifyForm.password" auto-complete="off"></el-input>
+            <el-input type="password" v-model="modifyForm.password" auto-complete="off"
+                      placeholder="空白表示不修改密码"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" :label-width="modifyLabelWidth">
+            <el-input type="password" v-model="modifyForm.password_verify" auto-complete="off"
+                      placeholder="空白表示不修改密码"></el-input>
+            <div class="el-form-item__error" v-if="warnWord_modify">{{modifyForm.username===''?'用户名不能为空':'两次输入的密码不一致'}}</div>
           </el-form-item>
           <el-form-item label="状态" :label-width="modifyLabelWidth">
             <el-select v-model="modifyForm.status" placeholder="请选择状态">
@@ -104,11 +103,10 @@
               <el-option label="启用" value=1></el-option>
             </el-select>
           </el-form-item>
-
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="registerFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="registerSubmit">确 定</el-button>
+          <el-button type="primary" @click="modifySubmit" :disabled="warnWord_modify">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -121,34 +119,9 @@
   export default {
     data () {
       return {
-        tableData: [
-          {
-            'id': '1',
-            'username': '0',
-            'password': '重在参与',
-            'status': '1',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '2',
-            'username': '1',
-            'password': '党委办公室',
-            'status': '0',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '2',
-            'username': '2',
-            'password': '党委统战部',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '3',
-            'username': '3',
-            'password': '校长办公室',
-            'update_time': 'xxxx-xx-xx'
-          }
-        ],
+        tableData: [],
+        warnWord_modify: false,
+        warnWord_register: false,
         modifyFormVisible: false,
         registerFormVisible: false,
         modifyForm: {
@@ -156,12 +129,14 @@
           id: '',
           username: '',
           password: '',
+          password_verify: '',
           status: ''
         },
         registerForm: {
           username: '',
           password: '',
-          status: ''
+          password_verify: '',
+          status: '0'
         },
         modifyLabelWidth: '120px'
       }
@@ -172,14 +147,16 @@
         this.modifyForm.index = index
         this.modifyForm.id = row.id
         this.modifyForm.username = row.username
-        this.modifyForm.password = row.password
+        this.modifyForm.password = ''
+        this.modifyForm.password_verify = ''
         this.modifyForm.status = row.status
       },
       handleDelete (index, row) {
         this.modifyForm.index = index
         this.modifyForm.id = row.id
         this.modifyForm.username = row.username
-        this.modifyForm.password = row.password
+        this.modifyForm.password = ''
+        this.modifyForm.password_verify = ''
         this.modifyForm.status = row.status
         this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -192,38 +169,73 @@
                 this.tableData.splice(this.modifyForm.index, 1)
                 this.$message({
                   type: 'success',
-                  message: '删除成功!'
+                  message: '删除成功!',
+                  showClose: true
                 })
               })
               .catch(() => {
                 this.$message({
                   type: 'error',
-                  message: '网络故障'
+                  message: '网络故障',
+                  showClose: true
                 })
               })
           }
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
+            showClose: true
           })
         })
       },
       modifySubmit () {
         this.modifyFormVisible = false
-        this.$ajax.post('', this.modifyForm)
+        var o = JSON.parse(JSON.stringify(this.modifyForm))
+        if (o.password === '') {
+          delete o.password
+          delete o.password_verify
+        }
+        this.$ajax.post('/auth/updateUser', o)
           .then((res) => {
-            // 这一块 还差一个时间没更新
-            this.tableData[this.modifyForm.index].id = this.modifyForm.id
-            this.tableData[this.modifyForm.index].username = this.modifyForm.username
-            this.tableData[this.modifyForm.index].password = this.modifyForm.password
-            this.tableData[this.modifyForm.index].status = this.modifyForm.status
-            this.$message({
-              type: 'success',
-              message: '编辑成功!'
-            })
+            console.log(res)
+            switch (res.data.code) {
+              case 10040:
+//                this.tableData[this.modifyForm.index].update_time = (new Date()).dataFormat('yyyy-MM-dd hh:mm:ss')
+                this.tableData[this.modifyForm.index].id = this.modifyForm.id
+                this.tableData[this.modifyForm.index].username = this.modifyForm.username
+                this.tableData[this.modifyForm.index].status = this.modifyForm.status
+                this.$message({
+                  type: 'success',
+                  message: '编辑成功!',
+                  showClose: true
+                })
+                break
+              case 20040:
+                this.$message({
+                  type: 'error',
+                  message: '用户id不存在!',
+                  showClose: true
+                })
+                break
+              case 20041:
+                this.$message({
+                  type: 'error',
+                  message: '所修改用户的用户名已存在!',
+                  showClose: true
+                })
+                break
+              case 20042:
+                this.$message({
+                  type: 'error',
+                  message: '所修改用户的用户名不能为空!',
+                  showClose: true
+                })
+                break
+            }
           })
-          .catch(() => {
+          .catch((e) => {
+            console.log(e)
             this.$message({
               type: 'error',
               message: '网络故障'
@@ -241,16 +253,89 @@
             this.tableData.push(o)
             this.$message = {
               type: 'success',
-              message: '注册成功'
+              message: '注册成功',
+              showClose: true
             }
           })
           .catch(() => {
             this.$message({
               type: 'error',
-              message: '网络故障'
+              message: '网络故障',
+              showClose: true
             })
           })
       }
+    },
+    mounted () {
+      this.$ajax.get('/auth/getUser')
+        .then((res) => {
+          switch (res.data.code) {
+            case 20020:
+              this.$message({
+                type: 'error',
+                message: '无用户信息可获取',
+                showClose: true
+              })
+              break
+            case 10020:
+              this.$message({
+                type: 'success',
+                message: '获取用户成功',
+                showClose: true
+              })
+              this.tableData = JSON.parse(res.data.data.slice(0, res.data.data.length))
+              break
+            default :
+              this.$message({
+                type: 'error',
+                message: '网络故障',
+                showClose: true
+              })
+          }
+        })
+        .catch((e) => {
+          this.$message({
+            type: 'error',
+            message: '网络故障',
+            showClose: true
+          })
+        })
+    },
+    watch: {
+      modifyForm: {
+        handler (o) {
+          if (o.password !== o.password_verify) {
+            this.warnWord_modify = true
+          } else if (o.username === '') {
+            this.warnWord_modify = true
+          } else {
+            this.warnWord_modify = false
+          }
+        },
+        deep: true
+      },
+      registerForm: {
+        handler (o) {
+          if (o.password !== o.password_verify) {
+            this.warnWord_register = true
+          } else if (o.username === '') {
+            this.warnWord_register = true
+          } else {
+            this.warnWord_register = false
+          }
+        },
+        deep: true
+      }
+
     }
   }
 </script>
+
+<style scoped>
+  .password {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
