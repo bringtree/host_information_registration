@@ -27,7 +27,23 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api': {
+        target: 'http://192.168.232.4:8083/',
+        changeOrigin: true,
+        pathRewrite: {
+          '/^api': ''
+        }
+      },
+      '/auth': {
+        target: 'http://192.168.232.4:8083/',
+        changeOrigin: true,
+        pathRewrite: {
+          '/^auth': ''
+        }
+      }
+
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)

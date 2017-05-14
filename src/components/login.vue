@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="printer-container">
-      <span id="teletype" v-html="type">{{type}}<span>|</span></span>
+      <span id="teletype" v-html="form.type">{{form.type}}<span>|</span></span>
     </div>
     <div class="login">
       <h1>登录</h1>
-      <input type="text" v-model="username" class="username" placeholder="用户名">
-      <input type="password" v-model="password" class="password" placeholder="密码">
+      <input type="text" v-model="form.username" class="username" placeholder="用户名">
+      <input type="password" v-model="form.password" class="password" placeholder="密码">
       <button type="submit" @click="login">提交</button>
     </div>
   </div>
@@ -16,19 +16,61 @@
   export default {
     data () {
       return {
-        username: '',
-        password: '',
-        type: ''
+        form: {
+          username: '',
+          password: '',
+          type: ''
+        }
       }
     },
     methods: {
       login () {
-        this.$ajax.post('/auth/login')
+        this.$ajax.post('/auth/login', this.form)
           .then((res) => {
-            this.$message({
-              message: '返回信息',
-              type: 'success'
-            })
+            switch (res.data.code) {
+              case 10010:
+                this.$message({
+                  message: '登录成功',
+                  type: 'success'
+                })
+                this.$router.push('/home')
+                break
+              case 20010:
+                this.$message({
+                  message: '用户不存在',
+                  type: 'error'
+                })
+                break
+              case 20011:
+                this.$message({
+                  message: '密码错误',
+                  type: 'error'
+                })
+                break
+              case 20012:
+                this.$message({
+                  message: '用户未启用',
+                  type: 'error'
+                })
+                break
+              case 20013:
+                this.$message({
+                  message: '用户已被删除',
+                  type: 'error'
+                })
+                break
+              case 10001:
+                this.$message({
+                  message: '系统错误',
+                  type: 'error'
+                })
+                break
+              default:
+                this.$message({
+                  message: '系统错误',
+                  type: 'error'
+                })
+            }
           })
           .catch(() => {
             this.$message({
@@ -43,7 +85,7 @@
       for (var i = 0; i < word.length; i++) {
         ((i) => {
           setTimeout(() => {
-            this.type += (word[i])
+            this.form.type += (word[i])
           }, 300 * i)
         })(i)
       }
