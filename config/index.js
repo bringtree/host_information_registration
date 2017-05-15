@@ -48,6 +48,13 @@ module.exports = {
         pathRewrite: {
           '/^network': ''
         }
+      },
+      '/department': {
+        target: 'http://192.168.232.4:8083/',
+        changeOrigin: true,
+        pathRewrite: {
+          '/^department': ''
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

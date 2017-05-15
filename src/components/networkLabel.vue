@@ -28,7 +28,7 @@
       <el-table
         :data="tableData"
         border
-        :default-sort="{prop: 'date', order: 'descending'}"
+        :default-sort="{prop: 'update_time', order: 'descending'}"
         style="width: 100%">
         <el-table-column
           label="id"
@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column
           label="最后修改日期"
-          prop="date"
+          prop="update_time"
           sortable
           width="250">
           <template scope="scope">

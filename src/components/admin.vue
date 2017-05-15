@@ -12,7 +12,9 @@
           </el-form-item>
           <el-form-item label="确认密码" :label-width="modifyLabelWidth">
             <el-input type="password" v-model="registerForm.password_verify" auto-complete="off"></el-input>
-            <div class="el-form-item__error" v-if="warnWord_register">{{registerForm.username===''?'用户名不能为空':'两次输入的密码不一致'}}</div>
+            <div class="el-form-item__error" v-if="warnWord_register">
+              {{registerForm.username===''?'用户名不能为空':'两次输入的密码不一致'}}
+            </div>
           </el-form-item>
           <el-form-item label="状态" :label-width="modifyLabelWidth">
             <el-select v-model="registerForm.status" placeholder="请选择状态">
@@ -95,7 +97,9 @@
           <el-form-item label="确认密码" :label-width="modifyLabelWidth">
             <el-input type="password" v-model="modifyForm.password_verify" auto-complete="off"
                       placeholder="空白表示不修改密码"></el-input>
-            <div class="el-form-item__error" v-if="warnWord_modify">{{modifyForm.username===''?'用户名不能为空':'两次输入的密码不一致'}}</div>
+            <div class="el-form-item__error" v-if="warnWord_modify">
+              {{modifyForm.username===''?'用户名不能为空':'两次输入的密码不一致'}}
+            </div>
           </el-form-item>
           <el-form-item label="状态" :label-width="modifyLabelWidth">
             <el-select v-model="modifyForm.status" placeholder="请选择状态">
@@ -125,7 +129,7 @@
         modifyFormVisible: false,
         registerFormVisible: false,
         modifyForm: {
-          index: '',
+          row: '',
           id: '',
           username: '',
           password: '',
@@ -144,7 +148,7 @@
     methods: {
       handleEdit (index, row) {
         this.modifyFormVisible = true
-        this.modifyForm.index = index
+        this.modifyForm.row = row
         this.modifyForm.id = row.id
         this.modifyForm.username = row.username
         this.modifyForm.password = ''
@@ -198,13 +202,12 @@
         }
         this.$ajax.post('/auth/updateUser', o)
           .then((res) => {
-            console.log(res)
             switch (res.data.code) {
               case 10040:
-//                this.tableData[this.modifyForm.index].update_time = (new Date()).dataFormat('yyyy-MM-dd hh:mm:ss')
-                this.tableData[this.modifyForm.index].id = this.modifyForm.id
-                this.tableData[this.modifyForm.index].username = this.modifyForm.username
-                this.tableData[this.modifyForm.index].status = this.modifyForm.status
+                this.modifyForm.row.update_time = JSON.parse(res.data.data).update_time
+                this.modifyForm.row.id = this.modifyForm.id
+                this.modifyForm.row.username = this.modifyForm.username
+                this.modifyForm.row.status = this.modifyForm.status
                 this.$message({
                   type: 'success',
                   message: '编辑成功!',
@@ -243,8 +246,9 @@
           })
       },
       registerSubmit () {
-        this.$ajax.post('', this.registerForm)
+        this.$ajax.post('/auth/addUser', this.registerForm)
           .then((res) => {
+            console.log(res)
             // 这一块 还差一个时间和id没更新
             var o = {}
             o.username = this.registerForm.username

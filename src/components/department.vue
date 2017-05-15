@@ -36,6 +36,7 @@
         <el-table-column
           label="类型"
           sortable
+          prop="type"
           width="180">
           <template scope="scope">
             <el-tag>{{
@@ -62,6 +63,9 @@
 
         <el-table-column
           label="状态"
+          width="100"
+          sortable
+          prop="status"
         >
           <template scope="scope">
             <span style="margin-left: 10px">{{ scope.row.status==1?'启用':'未启用' }}</span>
@@ -70,7 +74,8 @@
         <el-table-column
           label="最后修改日期"
           sortable
-          width="180">
+          prop="update_time"
+          width="220">
           <template scope="scope">
             <el-icon name="time"></el-icon>
             <span style="margin-left: 10px">{{ scope.row.update_time }}</span>
@@ -131,41 +136,14 @@
   export default {
     data () {
       return {
-        tableData: [
-          {
-            'id': '1',
-            'type': '0',
-            'department': '重在参与',
-            'status': '1',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '2',
-            'type': '1',
-            'department': '党委办公室',
-            'status': '0',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '2',
-            'type': '2',
-            'department': '党委统战部',
-            'update_time': 'xxxx-xx-xx'
-          },
-          {
-            'id': '3',
-            'type': '3',
-            'department': '校长办公室',
-            'update_time': 'xxxx-xx-xx'
-          }
-        ],
+        tableData: [],
         modifyFormVisible: false,
         modifyForm: {
-          index: '',
           id: '',
           department: '',
           status: '',
-          type: ''
+          type: '',
+          row: ''
         },
         addFormVisible: false,
         addForm: {
@@ -179,7 +157,7 @@
     methods: {
       handleEdit (index, row) {
         this.modifyFormVisible = true
-        this.modifyForm.index = index
+        this.modifyForm.row = row
         this.modifyForm.id = row.id
         this.modifyForm.department = row.department
         this.modifyForm.status = row.status
@@ -202,65 +180,117 @@
                 this.tableData.splice(this.modifyForm.index, 1)
                 this.$message({
                   type: 'success',
-                  message: '删除成功!'
+                  message: '删除成功!',
+                  showClose: true
                 })
               })
               .catch(() => {
                 this.$message({
                   type: 'error',
-                  message: '网络故障'
+                  message: '网络故障',
+                  showClose: true
                 })
               })
           }
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
+            showClose: true
           })
         })
       },
       modifySubmit () {
         this.modifyFormVisible = false
-        this.$ajax.post('', this.modifyForm)
+        this.$ajax.post('/department/edit', this.modifyForm)
           .then((res) => {
-            // 这一块 还差一个时间没更新
-            this.tableData[this.modifyForm.index].id = this.modifyForm.id
-            this.tableData[this.modifyForm.index].department = this.modifyForm.department
-            this.tableData[this.modifyForm.index].type = this.modifyForm.type
-            this.tableData[this.modifyForm.index].status = this.modifyForm.status
-            this.$message({
-              type: 'success',
-              message: '编辑成功!'
-            })
+            if (res.data.type === 'success') {
+              this.modifyForm.row.update_time = res.data.update_time
+              this.modifyForm.row.id = this.modifyForm.id
+              this.modifyForm.row.department = this.modifyForm.department
+              this.modifyForm.row.type = this.modifyForm.type
+              this.modifyForm.row.status = this.modifyForm.status
+              this.$message({
+                type: 'success',
+                message: '编辑成功!',
+                showClose: true
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '编辑失败!',
+                showClose: true
+              })
+            }
           })
-          .catch(() => {
+          .catch((e) => {
             this.$message({
               type: 'error',
-              message: '网络故障'
+              message: '网络故障',
+              showClose: true
             })
           })
       },
       addSubmit () {
-        this.$ajax.post('', this.addForm)
+        this.$ajax.post('/department/add', this.addForm)
           .then((res) => {
-            // 这一块 还差一个时间和id没更新
-            this.$message = {
-              type: 'success',
-              message: '添加成功'
+            if (res.data.type === 'success') {
+              var o = {}
+              o.id = res.data.id
+              o.update_time = res.data.update_time
+              o.department = this.addForm.department
+              o.type = this.addForm.type
+              o.status = this.addForm.status
+              this.tableData.push(o)
+              this.addFormVisible = false
+              this.$message({
+                type: 'success',
+                message: '添加成功',
+                showClose: true
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '添加失败',
+                showClose: true
+              })
             }
           })
-          .catch(() => {
-            var o = {}
-            o.department = this.addForm.department
-            o.type = this.addForm.type
-            o.status = this.addForm.status
-            this.tableData.push(o)
+          .catch((e) => {
+            console.log(e)
             this.$message({
               type: 'error',
-              message: '网络故障'
+              message: '网络故障',
+              showClose: true
             })
           })
       }
+    },
+    mounted () {
+      this.$ajax.get('/department/info')
+        .then((res) => {
+          if (res.data.type === 'success') {
+            this.$message({
+              type: 'success',
+              message: '信息载入成功',
+              showClose: true
+            })
+            this.tableData = res.data.message
+          } else {
+            this.$message({
+              type: 'error',
+              message: '网络故障',
+              showClose: true
+            })
+          }
+        })
+        .catch((e) => {
+          this.$message({
+            type: 'error',
+            message: '网络故障',
+            showClose: true
+          })
+        })
     }
   }
 </script>
