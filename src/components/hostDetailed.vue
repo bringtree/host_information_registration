@@ -509,6 +509,12 @@
         .then((res) => {
           this.hostInfo = JSON.parse(res.data.data)
           // 将操作系统位数，是否有加密狗，新应用上线是否检测，状态转化为文字信息
+          // if-else太low,也不好,改成三元操作符语句比较简洁
+          this.hostInfo.num_bit = (this.hostInfo.num_bit === '0') ? '32位' : '64位'
+          this.hostInfo.dongle = (this.hostInfo.dongle === '0') ? '无' : '有'
+          this.hostInfo.online_detection = (this.hostInfo.online_detection === '0') ? '否' : '有'
+          this.hostInfo.status = (this.hostInfo.status === '0') ? '未启用' : '已启用'
+          /*
           if (this.hostInfo.num_bit === '0') {
             this.hostInfo.num_bit = '32位'
           } else if (this.hostInfo.num_bit === '1') {
@@ -529,6 +535,7 @@
           } else if (this.hostInfo.status === '1') {
             this.hostInfo.status = '已启用'
           }
+          */
         }).catch(() => {
           this.err()
         })
